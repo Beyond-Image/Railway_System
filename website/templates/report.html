@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %} Report {% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/thomas.jpg');
+        background-size: cover;
+        background-position: center;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .container2 {
+        position: center;
+        max-width: 800px;
+        max-height: 550px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+        overflow-y: auto;
+}
+
+    .cart, .train-details, .user-details, .payment-info {
+        margin-bottom: 20px;
+        border: 2px solid black;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .report-info {
+        margin-bottom: 20px;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    ul {
+    list-style-type: none;
+    padding: 0;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-family: 'Arial', sans-serif;
+        color: #000;
+    }
+
+    .input-box {
+        margin-bottom: 20px;
+        width:100%;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+</style>
+
+<div class="container2">
+    <h1>Report</h1>
+
+    <form method="POST">
+        <label for="criteria">Search by:</label>
+        <select name="criteria" id="criteria">
+            <option value="routenum">Route Number</option>
+            <option value="all">All</option>
+        </select>
+
+        <input type="text" name="searchbar" id="searchbar" placeholder="Search...">
+        <button type="submit" name="action" class="btn btn-primary" value="searchbtn">Submit</button>
+    </form>
+
+    {% for train_data in info %}
+        <div class="report-info">
+            <div>
+                <h2>Route: {{ train_data.route.route_num }} Train: {{train_data.route.train_id}}</h2>
+                <p>Number of Tickets Purchased: {{ train_data.num_sold }}</p>
+                <p>Number of Tickets Promoed: {{ train_data.num_promo }}</p>
+                <p>Number of Seats Taken: {{ train_data.num_seats_taken }}</p>
+                <p>Demographics of Passengers:</p>
+                <ul>
+                    {% for ethnic, count in train_data.demographics.items() %}
+                        <li>{{ethnic}}: {{count}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

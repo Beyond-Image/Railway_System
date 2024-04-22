@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %} Payment {%endblock%}
+
+{% block content %}
+
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/thomas.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .container2 {
+        position: center;
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+}
+
+    .cart, .train-details, .user-details, .payment-info  {
+        margin-bottom: 20px;
+        border: 2px solid black;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    ul {
+    list-style-type: none;
+    padding: 0;
+    }
+
+    .payment-info label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .payment-info input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .payment-info button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .payment-info button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="container2">
+    <h2>Cart</h2>
+
+    <div class="cart">
+        <h2>Selected Seats</h2>
+
+        <ul>
+            {% for number in seat_nums %}
+                <li>{{number}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="train-details">
+        <h2>Train Details</h2>
+        <p>Date: {{ routes.date }}</p>
+        <p>Departure Time: {{ routes.departtime }}</p>
+        <p>Arrival Time: {{ routes.arrivaltime }}</p>
+        <p>Departure Location: {{ routes.departlocation }}</p>
+        <p>Destination: {{ routes.destination }}</p>
+    </div>
+
+    <div class="user-details">
+        <h2>Customer Details</h2>
+        <p>Email: {{ selected_user_entity.email }}</p>
+        <p>First Name: {{ selected_user_entity.firstname }}</p>
+        <p>Last Name: {{ selected_user_entity.lastname }}</p>
+    </div>
+
+
+    <div class="payment-info">
+        <form method="POST">
+
+            <button type="submit">Confirm Reservations</button>
+        </form>
+    </div>
+    
+</div>
+
+{% endblock %}

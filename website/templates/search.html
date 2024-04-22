@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %} Reservation {%endblock%}
+
+{% block content %}
+
+<div class="container2">
+    <h1> Search Tickets </h1>
+
+    <form classid="search" method="POST">
+        <label for="criteria">Search by:</label>
+        <select name="criteria" id="criteria">
+            <option value="trainnum">Train Number</option>
+            <option value="date">Date</option>
+            <option value="Destination">Destination</option>
+            <option value="departloc">Depart Location</option>
+            <option value="to-from">To-From (Split with (-))</option>
+            <option value="all">All</option>
+        </select>
+    
+        <input type="text" name="searchbar" id='searchbar' placeholder="Search...">
+        <button type="submit" name="action" class="btn btn-primary" value="searchbtn">Submit</button>
+    </form>
+    
+    
+    <table class="train-table">
+        <thead>
+            <tr>
+                <th>Route Number</th>
+                <th>Remaining Seats</th>
+                <th>Depart Location</th>
+                <th>Destination</th>
+                <th>Depart Time</th>
+                <th>Arrival Time</th>
+                <th>Date</th>
+                <th>Reserve</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if routes %}
+            {% for route, train in routes %}
+            <tr>
+                <td>{{route.route_num}}</td>
+                <td>{{train.capacity - (route.curr_num_pass or 0)}}</td>
+                <td>{{route.departlocation}}</td>
+                <td>{{route.destination}}</td>
+                <td>{{route.departtime}}</td>
+                <td>{{route.arrivaltime}}</td>
+                <td>{{route.date}}</td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="tracker" value="{{ route.route_num }}">
+                        <button type="submit" name="action" class="btn btn-primary" value="reserve">Reserve</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .container {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: 57%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index:-1;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container2 {
+        position: center;
+        max-width: 1100px;
+        max-height: 550px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+        overflow-y: auto;
+    }
+
+    .train-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .train-table th, .train-table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .train-table th {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .train-table td {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+</style>
+
+<script>
+    document.getElementById('criteria').addEventListener('change', function() {
+        var criteria = this.value;
+        var searchbar = document.getElementById('searchbar');
+        if (criteria === 'date') {
+            searchbar.type = 'date';
+        } else {
+            searchbar.type = 'text';
+        }
+    });
+</script>
+
+{%endblock%}

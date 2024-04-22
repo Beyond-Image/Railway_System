@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %} Tickets {%endblock%}
+
+{% block content %}
+
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .container2 {
+        position: center;
+        max-width: 800px;
+        max-height: 550px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+        overflow-y: auto;
+    }
+
+    .train-info {
+        margin-bottom: 20px;
+        border: 1px solid #000;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 1);
+    }
+
+    .ticket-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .ticket-list li {
+        margin-bottom: 10px;
+    }
+</style>
+
+
+
+<div class="container2">
+    <h1>Your Ticket(s)</h1>
+
+    <form classsid="search" method="POST">
+        <label>Route Number:</label>
+        <select name="route_picker">
+            {% for route in routes %}
+            <option value="{{route.route_num}}">{{route.departlocation}} to {{route.destination}}</option>
+            {% endfor %}
+            <option value="all">All</option>
+        </select>
+        <button type="submit" name="action" class="btn btn-primary" value="searchbtn">Search</button>
+    </form>
+
+    {% for route in routes %}
+        <div class="train-info">
+            <h2>Route: {{route.route_num}}</h2>
+            <ul class="ticket-list">
+                <li>
+                    <strong>Train Number:</strong> {{ route.train_id }} </br>
+                    <strong>Destination:</strong> {{ route.destination }} </br>
+                    <strong>Depart Time:</strong> {{ route.departtime }} </br>
+                    <strong>Arrival Time:</strong> {{route.arrivaltime}} </br>
+                    <strong>Date:</strong> {{ route.date }} </br>
+                    <strong>Seat(s)</strong>              
+                    {% for seat in seats %}
+                        {% if seat.route_id == route.route_num %}
+                            {{ seat.seatnum }}
+                            {% if not loop.last %}, {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            </ul>
+
+            <form class="manage-form" method="POST">
+                {% for ticket in tickets_by_train[route.route_num]%}
+                    <input type="hidden" name="ticket_id" value="{{ticket.ticketnum}}">
+                {% endfor %}
+                <input type="hidden" name="routenum" value="{{route.route_num}}">
+                <button type="submit" name="action" class="btn btn-primary" value="manage"> Manage </button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

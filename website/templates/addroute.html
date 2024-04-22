@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %} Add Route(s) {%endblock%}
+
+{% block content %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(function() {
+    $('.time-picker').datepicker({
+        timeFormat: 'hh:mm tt',
+        showButtonPanel: true,
+        controlType: 'select'
+    });
+});
+</script>
+
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .container2 {
+        position: center; 
+        margin-bottom: 200px;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        border: 1px solid black;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+    }
+</style>
+
+<div class="container2">
+    <h1> Add Route </h1>
+
+    <form classid="addroute" method="POST">
+        <div class="route-details">
+            <label for="trainnum">Train Number</label>
+            <select name="trainnum">
+                {% for train in trains %}
+                    <option value="{{train.trainnum}}">{{train.trainnum}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="departloc">Train Departure</label>
+            <input type="text" class="form-control" id="departloc" name="departloc" placeholder="Enter Train Departure" required/>
+        </div>
+
+        <div>
+            <label for="destination">Train Destination</label>
+            <input type="text" class="form-control" id="destination" name="destination" placeholder="Enter Train Destination" required/>
+        </div>
+
+        <div>
+            <label for="departtime">Train Depart Time</label>
+            <input type="time" class="form-control time-picker" id="departtime" name="departtime" placeholder="Enter Train Depart Time" required/>
+        </div>
+
+        <div>
+            <label for="arrivaltime">Train Arrival Time</label>
+            <input type="time" class="form-control time-picker" id="arrivaltime" name="arrivaltime" placeholder="Enter Train Arrival Time" required/>
+        </div>
+
+        <div>
+            <label for="date">Train Departure Date</label>
+            <input type="date" class="form-control" id="date" name="date" placeholder="Enter Train Departure Date" required/>
+        </div>
+
+    </br>
+
+        <div class="buttons">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+
+    </form>
+</div>
+{% endblock %}

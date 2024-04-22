@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %} Add Administrator {%endblock%}
+
+{% block content %}
+
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;  
+        display: flex;
+        align-items: center;
+    }
+
+    .container2 {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+            text-align: center;
+            margin-bottom: 5px;
+    }
+
+    .input-box {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="container2">
+    <h1> Make Staff/Admin</h1>
+
+<form classid="workers" method="POST">
+
+    <div class="staff-details">
+        <div class="input-box">
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" required />
+        </div>
+
+        <div class="input-box">
+            <span class="details">First Name</span>
+            <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter First Name" required />
+        </div>
+
+        <div class="input-box">
+            <span class="details">Last Name</span>
+            <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" required />
+        </div>
+
+        <div class="input-box">
+            <span class="details">Password</span>
+            <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter Password" required />
+        </div>
+
+        <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="Enter Password" required />
+        </div>
+    </div>
+
+</br>
+
+    <div class="buttons">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+</form>
+</div>
+
+
+{% endblock %}

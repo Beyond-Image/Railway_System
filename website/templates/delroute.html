@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %} Delete Route(s) {%endblock%}
+
+{% block content %}
+
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .container2 {
+        position: center; 
+        margin-bottom: 200px;
+        max-width: 900px;
+        max-height: 550px;
+        margin: 0 auto;
+        padding: 30px;
+        border: 1px solid black;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+        overflow-y: auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-family: 'Arial', sans-serif;
+        color: #000;
+    }
+
+    .input-box {
+        margin-bottom: 20px;
+        width:100%;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left; 
+        border-right: 1px solid #000;
+    }
+</style>
+
+
+
+<div class="container2">
+    <h1> Delete Route(s) </h1>
+
+
+    <form classid="searchid" method="POST">
+        <label for="criteria">Search by:</label>
+        <select name="criteria" id="criteria">
+            <option value="routenum">Route Num</option>
+            <option value="date">Date</option>
+            <option value="Destination">Destination</option>
+            <option value="departloc">Depart Location</option>
+            <option value="all">All</option>
+        </select>
+
+        <input type="text" name="searchbar" id="searchbar" placeholder="Search...">
+        <button type="submit" name="action" class="btn btn-primary" value="searchbtn">Submit</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Route Number</th>
+                <th>Depart Location</th>
+                <th>Destination</th>
+                <th>Depart Time</th>
+                <th>Arrival Time</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for route in routes %}
+            <tr>
+                <td>{{route.route_num}}</td>
+                <td>{{route.departlocation}}</td>
+                <td>{{route.destination}}</td>
+                <td>{{route.departtime}}</td>
+                <td>{{route.arrivaltime}}</td>
+                <td>{{route.date}}</td>
+                <td>
+                    <form action="{{url_for('views.delroute')}}" method="POST">
+                        <input type="hidden" name="routenum" value="{{route.route_num}}">
+                        <button type="submit" name="action" class="btn btn-primary" value="cancel">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    document.getElementById('criteria').addEventListener('change', function() {
+        var criteria = this.value;
+        var searchbar = document.getElementById('searchbar');
+        if (criteria === 'date') {
+            searchbar.type = 'date';
+        } else {
+            searchbar.type = 'text';
+        }
+    });
+</script>
+{% endblock %}

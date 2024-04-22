@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %} Seat Selector {% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: auto;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .container2 {
+        position: center; 
+        margin-bottom: 200px;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        border: 1px solid black;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-family: 'Arial', sans-serif;
+        color: #000;
+    }
+
+    .input-box {
+        margin-bottom: 20px;
+        width:100%;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .checkbox-container {
+        margin-bottom: 10px;
+    }
+
+    .checkbox-container input[type="checkbox"]:checked + .custom-checkbox {
+        display: none;
+    }
+
+    .custom-checkbox {
+        display: inline-block;
+        width: 5vw;
+        height: 5vw;
+        background-color: antiquewhite;
+        border-radius: 8px;
+        text-align: center;
+        line-height: 5vw;
+        font-weight: bold;
+        cursor: pointer;
+        margin-right: 2vw;
+        margin-left: 2vw;
+    }
+
+    .custom-checkbox input[type="checkbox"]:checked + .custom-checkbox {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .custom-checkbox input[type="checkbox"]:checked {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .custom-checkbox input[type="checkbox"]:disabled + .custom-checkbox {
+        background-color: #dddddd;
+        cursor: not-allowed;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+</style>
+
+<div class="buffer">
+    <div class="container2">
+        <h1>Select Seats for {{route.destination}} from {{route.departlocation}}</h1>
+
+        <form method="post">
+            <div class="checkbox-container">
+                {% for seat in seats %}
+                    {% if seat.reserved %}
+                        <label class="custom-checkbox" style="background-color: #dddddd; cursor: not-allowed;">
+                            <input type="checkbox" name="seat" value="{{ seat.id }}" disabled>
+                            {{seat.seatnum}}
+                        </label>
+                    {% else %}
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="seat" value="{{ seat.id }}">
+                            {{seat.seatnum}}
+                        </label>
+                    {% endif %}
+                    {% if loop.index % 5 == 0 %}
+                        <div class="clear"></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <button type="submit">Reserve Selected Seats</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

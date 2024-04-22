@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %} Admin Tickets {% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .container2 {
+        position: center; 
+        margin-bottom: 200px;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-family: 'Arial', sans-serif;
+        color: #000;
+    }
+
+    .input-box {
+        margin-bottom: 20px;
+        width:100%;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="container2">
+    <div style="display: flex;">
+        <div style="flex: 1;">
+            <h1>Remove Tickets</h1>
+            <form method="POST">
+                <label>Select Desired User:</label>
+                <select name="user_pick">
+                    {% for person in all_users %}
+                        <option value="{{ person.id }}">{{ person.email }}</option>
+                    {% endfor %}
+                        <option value="all">All</option>
+                </select>
+                <button type="submit" name="action" value="filter">Search</button>
+            </form>
+            {% for user in all_users %}
+                {% if user.tickets %}
+                    <h2>{{ user.email }}</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Train Number</th>
+                                <th>Route Number</th>
+                                <th>Ticket ID</th>
+                                <th>Seat Number</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticket in user.tickets %}
+                                {% if ticket.purchased != 'no' %}
+                                    {% set seat = ticket.seat %}
+                                    <tr>
+                                        <td>{{ ticket.trainnum }}</td>
+                                        <td>{{ticket.route_num}}</td>
+                                        <td>{{ ticket.ticketnum }}</td>
+                                        <td>{{ seat.seatnum }}</td>
+                                        <td>
+                                            <form method="POST">
+                                                <input type="hidden" name="ticket_id" value="{{ ticket.ticketnum }}">
+                                                <button type="submit" name="action" value="remove">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div style="flex: 1;">
+            <h1>Add Tickets</h1>
+            <form method="POST">
+                <label for="user_id">User Email</label>
+                <select name="user_id">
+                    {% for person in all_users %}
+                        <option value="{{ person.id }}">{{ person.email }}</option>
+                    {% endfor %}
+                </select>
+            </br>
+                <label for="routenum">Routes</label>
+                <select name="routenum">
+                    {% for route in routes %}
+                        <option value="{{ route.route_num }}">{{route.departlocation}} to {{ route.destination }} @ {{route.departtime}}</option>
+                    {% endfor %}
+                </select>
+            </br>
+                <button type="submit" name="action" value="add">Add Ticket(s)</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
