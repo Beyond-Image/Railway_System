@@ -117,15 +117,15 @@
         <tbody>
             {% for route in routes %}
             <tr>
-                <td>{{route.route_num}}</td>
-                <td>{{route.departlocation}}</td>
+                <td>{{route.route_id}}</td>
+                <td>{{route.depart_location}}</td>
                 <td>{{route.destination}}</td>
-                <td>{{route.departtime}}</td>
-                <td>{{route.arrivaltime}}</td>
+                <td>{{route.depart_time}}</td>
+                <td>{{route.arrival_time}}</td>
                 <td>{{route.date}}</td>
                 <td>
                     <form action="{{url_for('views.delroute')}}" method="POST">
-                        <input type="hidden" name="routenum" value="{{route.route_num}}">
+                        <input type="hidden" name="routenum" value="{{route.route_id}}">
                         <button type="submit" name="action" class="btn btn-primary" value="cancel">Remove</button>
                     </form>
                 </td>

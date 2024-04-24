@@ -117,20 +117,20 @@
 
 <div class="buffer">
     <div class="container2">
-        <h1>Select Seats for {{route.destination}} from {{route.departlocation}}</h1>
+        <h1>Select Seats for {{route.destination}} from {{route.depart_location}}</h1>
 
         <form method="post">
             <div class="checkbox-container">
                 {% for seat in seats %}
                     {% if seat.reserved %}
                         <label class="custom-checkbox" style="background-color: #dddddd; cursor: not-allowed;">
-                            <input type="checkbox" name="seat" value="{{ seat.id }}" disabled>
-                            {{seat.seatnum}}
+                            <input type="checkbox" name="seat" value="{{ seat.seat_id }}" disabled>
+                            {{seat.seat_number}}
                         </label>
                     {% else %}
                         <label class="custom-checkbox">
-                            <input type="checkbox" name="seat" value="{{ seat.id }}">
-                            {{seat.seatnum}}
+                            <input type="checkbox" name="seat" value="{{ seat.seat_id }}">
+                            {{seat.seat_number}}
                         </label>
                     {% endif %}
                     {% if loop.index % 5 == 0 %}

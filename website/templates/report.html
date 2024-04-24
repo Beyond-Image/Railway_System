@@ -109,7 +109,7 @@
     {% for train_data in info %}
         <div class="report-info">
             <div>
-                <h2>Route: {{ train_data.route.route_num }} Train: {{train_data.route.train_id}}</h2>
+                <h2>Route: {{ train_data.route.route_id }} Train: {{train_data.route.train_id}}</h2>
                 <p>Number of Tickets Purchased: {{ train_data.num_sold }}</p>
                 <p>Number of Tickets Promoed: {{ train_data.num_promo }}</p>
                 <p>Number of Seats Taken: {{ train_data.num_seats_taken }}</p>

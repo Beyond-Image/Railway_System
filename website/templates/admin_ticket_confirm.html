@@ -11,6 +11,7 @@
         background-image: url('static/images/thomas.jpg');
         background-size: cover;
         background-position: center;
+        
     }
 
     .container2 {
@@ -77,17 +78,17 @@
     <div class="train-details">
         <h2>Train Details</h2>
         <p>Date: {{ routes.date }}</p>
-        <p>Departure Time: {{ routes.departtime }}</p>
-        <p>Arrival Time: {{ routes.arrivaltime }}</p>
-        <p>Departure Location: {{ routes.departlocation }}</p>
+        <p>Departure Time: {{ routes.depart_time }}</p>
+        <p>Arrival Time: {{ routes.arrival_time }}</p>
+        <p>Departure Location: {{ routes.depart_location }}</p>
         <p>Destination: {{ routes.destination }}</p>
     </div>
 
     <div class="user-details">
         <h2>Customer Details</h2>
         <p>Email: {{ selected_user_entity.email }}</p>
-        <p>First Name: {{ selected_user_entity.firstname }}</p>
-        <p>Last Name: {{ selected_user_entity.lastname }}</p>
+        <p>First Name: {{ selected_user_entity.first_name }}</p>
+        <p>Last Name: {{ selected_user_entity.last_name }}</p>
     </div>
 
 

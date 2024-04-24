@@ -8,8 +8,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150), nullable=False)
-    firstname= db.Column(db.String(150), nullable=False)
-    lastname= db.Column(db.String(150), nullable=False)
+    first_name= db.Column(db.String(150), nullable=False)
+    last_name= db.Column(db.String(150), nullable=False)
     role = db.Column(db.String(150), nullable=False)
     ethnicity = db.Column(db.String(150), nullable=True, default='Undisclosed')
     address_state = db.Column(db.String(150), nullable=True)
@@ -19,17 +19,17 @@ class User(db.Model, UserMixin):
     tickets= db.relationship('Ticket')
 
 class Train(db.Model):
-    trainnum = db.Column(db.Integer, primary_key=True)
+    train_id = db.Column(db.Integer, primary_key=True)
     capacity = db.Column(db.Integer)
     seats = db.relationship('Seat', backref='Train', lazy=True)
     schedule = db.relationship('Schedule', backref='Train', lazy=True)
 
 class Ticket(db.Model):
-    ticketnum = db.Column(db.Integer, primary_key=True)
-    trainnum = db.Column(db.Integer, db.ForeignKey('train.trainnum'))
+    ticket_id = db.Column(db.Integer, primary_key=True)
+    train_id = db.Column(db.Integer, db.ForeignKey('train.train_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    seat_id = db.Column(db.Integer, db.ForeignKey('seat.id'))
-    route_num = db.Column(db.Integer, db.ForeignKey('schedule.route_num'))
+    seat_id = db.Column(db.Integer, db.ForeignKey('seat.seat_id'))
+    route_id = db.Column(db.Integer, db.ForeignKey('schedule.route_id'))
     purchased = db.Column(db.String(100), default='no')
     seat = db.relationship('Seat', back_populates='ticket')
     schedule = db.relationship('Schedule')
@@ -37,21 +37,21 @@ class Ticket(db.Model):
 
 
 class Seat(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    train_id = db.Column(db.Integer, db.ForeignKey('train.trainnum'), nullable=False)
-    route_id = db.Column(db.Integer, db.ForeignKey('schedule.route_num'), nullable=False)
-    seatnum = db.Column(db.Integer, nullable=False)
+    seat_id = db.Column(db.Integer, primary_key=True)
+    train_id = db.Column(db.Integer, db.ForeignKey('train.train_id'), nullable=False)
+    route_id = db.Column(db.Integer, db.ForeignKey('schedule.route_id'), nullable=False)
+    seat_number = db.Column(db.Integer, nullable=False)
     reserved = db.Column(db.Boolean, default=False)
     ticket = db.relationship('Ticket', back_populates='seat', uselist=False)
 
 class Schedule(db.Model):
-    route_num = db.Column(db.Integer, primary_key=True)
-    train_id = db.Column(db.Integer, db.ForeignKey('train.trainnum'), nullable=False)
-    curr_num_pass = db.Column(db.Integer, default=0)
-    departlocation = db.Column(db.String(100))
+    route_id = db.Column(db.Integer, primary_key=True)
+    train_id = db.Column(db.Integer, db.ForeignKey('train.train_id'), nullable=False)
+    current_number_passenger = db.Column(db.Integer, default=0)
+    depart_location = db.Column(db.String(100))
     destination = db.Column(db.String(100))
-    departtime = db.Column(db.String(10))
-    arrivaltime = db.Column(db.String(10))
+    depart_time = db.Column(db.String(10))
+    arrival_time = db.Column(db.String(10))
     date = db.Column(db.Date)
     seats = db.relationship('Seat', backref='Schedule', lazy=True)
 

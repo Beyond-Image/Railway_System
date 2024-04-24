@@ -88,9 +88,10 @@
     <h1> Delete Train(s) </h1>
 
     <form classid="search" method="POST">
-        <label for="criteria">Train Number: </label>
+        <label for="criteria">Search Trains: </label>
         <select name="criteria" id="criteria">
             <option value="trainnum">Train Num</option>
+            <option value="capacity">Capacity</option>
             <option value="all">All</option>
         </select>
 
@@ -110,11 +111,11 @@
             <tbody>
                 {% for train in trains %}
                 <tr>
-                    <td>{{train.trainnum}}</td>
+                    <td>{{train.train_id}}</td>
                     <td>{{train.capacity}}</td>
                     <td>
                         <form method="POST">
-                            <input type="hidden" name="trainnum" value="{{train.trainnum}}">
+                            <input type="hidden" name="trainnum" value="{{train.train_id}}">
                             <button type="submit" name="action" class="btn btn-primary" value="delete">Remove</button>
                         </form>
                     </td>

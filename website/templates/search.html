@@ -39,16 +39,20 @@
             {% if routes %}
             {% for route, train in routes %}
             <tr>
-                <td>{{route.route_num}}</td>
-                <td>{{train.capacity - (route.curr_num_pass or 0)}}</td>
-                <td>{{route.departlocation}}</td>
+                <td>{{route.route_id}}</td>
+                {% if train.capacity == route.current_number_passenger %}
+                <td>Sold Out</td>
+                {% else %}
+                <td>{{train.capacity - (route.current_number_passenger or 0)}}</td>
+                {% endif %}
+                <td>{{route.depart_location}}</td>
                 <td>{{route.destination}}</td>
-                <td>{{route.departtime}}</td>
-                <td>{{route.arrivaltime}}</td>
+                <td>{{route.depart_time}}</td>
+                <td>{{route.arrival_time}}</td>
                 <td>{{route.date}}</td>
                 <td>
                     <form method="POST">
-                        <input type="hidden" name="tracker" value="{{ route.route_num }}">
+                        <input type="hidden" name="tracker" value="{{ route.route_id }}">
                         <button type="submit" name="action" class="btn btn-primary" value="reserve">Reserve</button>
                     </form>
                 </td>

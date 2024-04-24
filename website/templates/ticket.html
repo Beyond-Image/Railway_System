@@ -58,7 +58,7 @@
         <label>Route Number:</label>
         <select name="route_picker">
             {% for route in routes %}
-            <option value="{{route.route_num}}">{{route.departlocation}} to {{route.destination}}</option>
+            <option value="{{route.route_id}}">{{route.depart_location}} to {{route.destination}}</option>
             {% endfor %}
             <option value="all">All</option>
         </select>
@@ -67,18 +67,19 @@
 
     {% for route in routes %}
         <div class="train-info">
-            <h2>Route: {{route.route_num}}</h2>
+            <h2>Route: {{route.route_id}}</h2>
             <ul class="ticket-list">
                 <li>
                     <strong>Train Number:</strong> {{ route.train_id }} </br>
+                    <strong>Depart Location:</strong> {{route.depart_location}} </br>
                     <strong>Destination:</strong> {{ route.destination }} </br>
-                    <strong>Depart Time:</strong> {{ route.departtime }} </br>
-                    <strong>Arrival Time:</strong> {{route.arrivaltime}} </br>
+                    <strong>Depart Time:</strong> {{ route.depart_time }} </br>
+                    <strong>Arrival Time:</strong> {{route.arrival_time}} </br>
                     <strong>Date:</strong> {{ route.date }} </br>
                     <strong>Seat(s)</strong>              
                     {% for seat in seats %}
-                        {% if seat.route_id == route.route_num %}
-                            {{ seat.seatnum }}
+                        {% if seat.route_id == route.route_id %}
+                            {{ seat.seat_number }}
                             {% if not loop.last %}, {% endif %}
                         {% endif %}
                     {% endfor %}
@@ -86,10 +87,10 @@
             </ul>
 
             <form class="manage-form" method="POST">
-                {% for ticket in tickets_by_train[route.route_num]%}
-                    <input type="hidden" name="ticket_id" value="{{ticket.ticketnum}}">
+                {% for ticket in tickets_by_train[route.route_id]%}
+                    <input type="hidden" name="ticket_id" value="{{ticket.ticket_id}}">
                 {% endfor %}
-                <input type="hidden" name="routenum" value="{{route.route_num}}">
+                <input type="hidden" name="routenum" value="{{route.route_id}}">
                 <button type="submit" name="action" class="btn btn-primary" value="manage"> Manage </button>
             </form>
         </div>

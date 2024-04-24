@@ -34,16 +34,16 @@ def ticket():
 
     ticks = Ticket.query.filter_by(user_id=current_user.id).all()
     ticket_list = [tick.seat_id for tick in ticks]
-    route_nums = [tick.route_num for tick in ticks]
-    train_nums = [tick.trainnum for tick in ticks]
+    route_nums = [tick.route_id for tick in ticks]
+    train_nums = [tick.train_id for tick in ticks]
 
-    routes = Schedule.query.filter(Schedule.route_num.in_(route_nums)).all()
-    trains = Train.query.filter(Train.trainnum.in_(train_nums)).all()
-    seats = Seat.query.filter(Seat.id.in_(ticket_list)).all()
+    routes = Schedule.query.filter(Schedule.route_id.in_(route_nums)).all()
+    trains = Train.query.filter(Train.train_id.in_(train_nums)).all()
+    seats = Seat.query.filter(Seat.seat_id.in_(ticket_list)).all()
 
     tickets_by_train = defaultdict(list)
     for tick in ticks:
-        tickets_by_train[tick.route_num].append(tick)
+        tickets_by_train[tick.route_id].append(tick)
 
 
     action = request.form.get('action')
@@ -51,10 +51,10 @@ def ticket():
     if action == 'searchbtn':
         query = request.form.get('route_picker')
         if query != 'all':
-            routes = Schedule.query.filter(Schedule.route_num==query).all()
+            routes = Schedule.query.filter(Schedule.route_id==query).all()
             return render_template("ticket.html", user=current_user, trains=trains, tickets=ticks, tickets_by_train=tickets_by_train, seats=seats, routes=routes)
         else:
-            routes = Schedule.query.filter(Schedule.route_num.in_(route_nums)).all()
+            routes = Schedule.query.filter(Schedule.route_id.in_(route_nums)).all()
             return render_template("ticket.html", user=current_user, trains=trains, tickets=ticks, tickets_by_train=tickets_by_train, seats=seats, routes=routes)
 
 
@@ -78,17 +78,17 @@ def ticket():
 def cancel():
     routenum = session['routenum']
     selected_tickets = session['tick_id_list']
-    route = Schedule.query.filter(Schedule.route_num == routenum).first()
-    ticks = Ticket.query.filter(Ticket.ticketnum.in_(selected_tickets)).all()
-    seatnum = [ticket.seat_id for ticket in ticks if str(ticket.ticketnum) in selected_tickets]
-    seats = Seat.query.filter(Seat.id.in_(seatnum)).all()
+    route = Schedule.query.filter(Schedule.route_id == routenum).first()
+    ticks = Ticket.query.filter(Ticket.ticket_id.in_(selected_tickets)).all()
+    seatnum = [ticket.seat_id for ticket in ticks if str(ticket.ticket_id) in selected_tickets]
+    seats = Seat.query.filter(Seat.seat_id.in_(seatnum)).all()
 
 
     if request.method == 'POST':
         picked_tickets = request.form.getlist('canceler')
         print([picked_tickets])
         cancel_tickets = Ticket.query.filter(Ticket.seat_id.in_(picked_tickets)).all()
-        cancel_seat = Seat.query.filter(Seat.id.in_(picked_tickets))
+        cancel_seat = Seat.query.filter(Seat.seat_id.in_(picked_tickets))
 
         for ticket in cancel_tickets:
             print(ticket.ticketnum)
@@ -100,9 +100,9 @@ def cancel():
             seat.reserved = False
             db.session.commit()
 
-        route = Schedule.query.filter(Schedule.route_num == routenum).first()
-        num_seat_rev = Seat.query.filter_by(route_id=ticket.route_num, reserved=True).count()
-        route.curr_num_pass = num_seat_rev
+        route = Schedule.query.filter(Schedule.route_id == routenum).first()
+        num_seat_rev = Seat.query.filter_by(route_id=ticket.route_id, reserved=True).count()
+        route.current_number_passenger = num_seat_rev
         db.session.commit()
         flash('Successfully Canceled Ticket', category='sucesses')
         return redirect(url_for('views.home'))
@@ -118,11 +118,11 @@ def confirm_payment():
     selected_seats = session['selected_seats']
     routenum = session['routenum']
 
-    route = Schedule.query.filter(Schedule.route_num==routenum).first()
-    trains = Train.query.filter(Train.trainnum==route.train_id).first()
+    route = Schedule.query.filter(Schedule.route_id==routenum).first()
+    trains = Train.query.filter(Train.train_id==route.train_id).first()
     seats = Seat.query.filter_by(route_id=routenum).all()
     tickets = Ticket.query.filter(Ticket.seat_id.in_(selected_seats)).all()
-    seat_nums = [seat.seatnum for seat in seats if str(seat.id) in selected_seats]
+    seat_nums = [seat.seat_number for seat in seats if str(seat.seat_id) in selected_seats]
 
 
     if request.method == 'POST':
@@ -136,16 +136,16 @@ def confirm_payment():
 def payment():
     selected_seats = session['selected_seats']
     routenum = session['routenum']
-    route = Schedule.query.filter(Schedule.route_num==routenum).first()
-    trains = Train.query.filter(Train.trainnum==route.train_id).first()
+    route = Schedule.query.filter(Schedule.route_id==routenum).first()
+    trains = Train.query.filter(Train.train_id==route.train_id).first()
     seats = Seat.query.filter_by(route_id=routenum).all()
     tickets = Ticket.query.filter(Ticket.seat_id.in_(selected_seats)).all()
-    seat_nums = [seat.seatnum for seat in seats if str(seat.id) in selected_seats]
+    seat_nums = [seat.seat_number for seat in seats if str(seat.seat_id) in selected_seats]
     print(selected_seats)
 
     if request.method == 'POST':
         for seat in seats:
-            if str(seat.id) in selected_seats:
+            if str(seat.seat_id) in selected_seats:
                 seat.reserved = True
                 db.session.commit()
         for ticket in tickets:
@@ -157,7 +157,7 @@ def payment():
         db.session.commit()
 
         num_seat_rev = Seat.query.filter_by(route_id=routenum, reserved=True).count()
-        route.curr_num_pass = num_seat_rev
+        route.current_number_passenger = num_seat_rev
         db.session.commit()
 
 
@@ -165,6 +165,7 @@ def payment():
         session['routenum'] = routenum
         session['selected_seats'] = selected_seats
 
+        flash('Payment Successful', category='success')
         return redirect(url_for('views.confirm_payment'))
 
     return render_template('payment.html', user=current_user, trains=trains, seats=seats, selected_seats=selected_seats, tickets=tickets, seat_nums=seat_nums, route=route)
@@ -172,9 +173,9 @@ def payment():
 @views.route('/reserve/<routenum>', methods=['GET', 'POST'])
 @login_required
 def reserve(routenum):
-    route = Schedule.query.filter(Schedule.route_num==routenum).first()
+    route = Schedule.query.filter(Schedule.route_id==routenum).first()
     trainnum = route.train_id
-    trains = Train.query.filter(Train.trainnum==trainnum).first()
+    trains = Train.query.filter(Train.train_id==trainnum).first()
     seats = Seat.query.filter_by(route_id=routenum).all()
 
     if request.method == 'POST':
@@ -188,7 +189,6 @@ def reserve(routenum):
 @views.route('/search', methods = ['GET', 'POST'])
 @login_required
 def search():
-    routes = db.session.query(Schedule, Train).join(Train, Schedule.train_id==Train.trainnum).all()
     trains = Train.query.all()
     action = request.form.get('action')
     searchbar = []
@@ -198,24 +198,27 @@ def search():
         query = request.form.get('searchbar')
 
         if criteria == 'trainnum':
-            routes = db.session.query(Schedule, Train).join(Train, Schedule.train_id==query).all()
+            routes = db.session.query(Schedule, Train).join(Schedule).filter(Schedule.train_id == query).all()
+            print(routes)
         elif criteria == 'date':
-            routes = db.session.query(Schedule, Train).join(Train, Schedule.date==query).all()
+            routes = db.session.query(Schedule, Train).join(Schedule).filter(Schedule.date == query).all()
         elif criteria == 'Destination':
-            routes = db.session.query(Schedule, Train).join(Train, Schedule.destination==query).all()
+            routes = db.session.query(Schedule, Train).join(Schedule).filter(Schedule.destination == query).all()
         elif criteria == 'departloc':
-            routes = db.session.query(Schedule, Train).join(Train, Schedule.departlocation==query).all()
+            routes = db.session.query(Schedule, Train).join(Schedule).filter(Schedule.depart_location == query).all()
         elif criteria == 'to-from':
             from_location, to_location = query.split('-')
-            routes = db.session.query(Schedule, Train).join(Train).filter(Schedule.departlocation == from_location, Schedule.destination == to_location).all()
+            routes = db.session.query(Schedule, Train).join(Train).filter(Schedule.depart_location == from_location, Schedule.destination == to_location).all()
         else:
-            routes = db.session.query(Schedule, Train).join(Train, Schedule.train_id == Train.trainnum).all()
+            routes = db.session.query(Schedule, Train).join(Train, Schedule.train_id == Train.train_id).all()
 
         return render_template("search.html", user=current_user, routes=routes, trains=trains)
 
     elif action == 'reserve':
         route_num = request.form.get('tracker')
         return redirect(url_for('views.reserve', routenum=route_num))
+    
+    routes = db.session.query(Schedule, Train).join(Train, Schedule.train_id==Train.train_id).all()
 
     return render_template("search.html", user=current_user, routes=routes, trains=trains)
 
@@ -224,22 +227,15 @@ def search():
 def addtrain():
 
     if request.method == 'POST':
-        trainnum = request.form.get('trainnum')
         capacity= request.form.get('capacity')
 
-        train = Train.query.filter_by(trainnum=trainnum).first()
-
-        if train:
-            flash('Train Already Exists', category='error')
-            return redirect(url_for('views.home'))
-        else:
-            new_train = Train(trainnum=trainnum, capacity=capacity)
-            db.session.add(new_train)
-            db.session.commit()
+        new_train = Train(capacity=capacity)
+        db.session.add(new_train)
+        db.session.commit()
 
 
-            flash('Train Added', category='success')
-            return redirect(url_for('views.home'))
+        flash('Train Successfully Added', category='success')
+        return render_template("addtrain.html", user=current_user)
 
     return render_template("addtrain.html", user=current_user)
 
@@ -251,9 +247,9 @@ def deltrain():
 
     if action == "delete":
         train_id = request.form.get('trainnum')
-        train = Train.query.filter_by(trainnum=train_id).first()
+        train = Train.query.filter_by(train_id=train_id).first()
         routes = Schedule.query.filter(Schedule.train_id == train_id).all()
-        tickets = Ticket.query.filter(Ticket.trainnum==train_id).all()
+        tickets = Ticket.query.filter(Ticket.train_id==train_id).all()
         seats = Seat.query.filter(Seat.train_id==train_id).all()
 
 
@@ -287,7 +283,10 @@ def deltrain():
             trains = Train.query.all()
 
         if criteria == 'trainnum':
-            trains = Train.query.filter(Train.trainnum == query).all()
+            trains = Train.query.filter(Train.train_id == query).all()
+
+        if criteria == 'capacity':
+            trains = Train.query.filter(Train.capacity==query).all()
 
         render_template('deltrain.html', user=current_user, trains=trains)
     
@@ -308,29 +307,29 @@ def addroute():
         depart_time = request.form.get('departtime')
         arrival_time = request.form.get('arrivaltime')
         date = datetime.strptime(request.form.get('date'), '%Y-%m-%d').date()
-        train = Train.query.filter_by(trainnum=trainnum).first()
+        train = Train.query.filter_by(train_id=trainnum).first()
 
-        new_route = Schedule(train_id=trainnum, departlocation=depart_location, destination=destination, departtime=depart_time, arrivaltime=arrival_time, date=date)
+        new_route = Schedule(train_id=trainnum, depart_location=depart_location, destination=destination, depart_time=depart_time, arrival_time=arrival_time, date=date)
         db.session.add(new_route)
         db.session.commit()
 
-        routenum = Schedule.query.filter_by(train_id=trainnum, departlocation=depart_location, destination=destination, departtime=depart_time, arrivaltime=arrival_time, date=date).first()
+        routenum = Schedule.query.filter_by(train_id=trainnum, depart_location=depart_location, destination=destination, depart_time=depart_time, arrival_time=arrival_time, date=date).first()
 
         for seat_num in range(1, int(train.capacity)+1):
-            new_seat = Seat(train_id=trainnum, route_id=routenum.route_num, seatnum=seat_num)
+            new_seat = Seat(train_id=trainnum, route_id=routenum.route_id, seat_number=seat_num)
             db.session.add(new_seat)
         db.session.commit()
 
-        seats = Seat.query.filter_by(route_id=routenum.route_num).all()
+        seats = Seat.query.filter_by(route_id=routenum.route_id).all()
 
         for seat in seats:
-            new_ticket = Ticket(trainnum=trainnum, user_id=None, seat_id=seat.id, route_num=routenum.route_num)
+            new_ticket = Ticket(train_id=trainnum, user_id=None, seat_id=seat.seat_id, route_id=routenum.route_id)
             db.session.add(new_ticket)
             db.session.commit()
 
 
         flash('Route Successfully Added', category='success')
-        return redirect(url_for('views.home'))
+        return render_template('addroute.html', user=current_user, trains=trains)
 
     return render_template('addroute.html', user=current_user, trains=trains)
 
@@ -347,13 +346,13 @@ def delroute():
         query = request.form.get('searchbar')
 
         if criteria == 'routenum':
-            routes = Schedule.query.filter(Schedule.route_num==query).all()
+            routes = Schedule.query.filter(Schedule.route_id==query).all()
         elif criteria == 'date':
             routes = Schedule.query.filter(Schedule.date == query).all()
         elif criteria == 'Destination':
             routes = Schedule.query.filter(Schedule.destination == query).all()
         elif criteria == 'departloc':
-            routes = Schedule.query.filter(Schedule.departlocation == query).all()
+            routes = Schedule.query.filter(Schedule.depart_location == query).all()
         else:
             routes = Schedule.query.all()
 
@@ -361,9 +360,9 @@ def delroute():
 
     elif action == 'cancel':
         routenum = request.form.get('routenum')
-        route = Schedule.query.filter(Schedule.route_num == routenum).first()
-        seats = Seat.query.filter(Seat.route_id==route.route_num).all()
-        tickets = Ticket.query.filter(Ticket.route_num==route.route_num).all()
+        route = Schedule.query.filter(Schedule.route_id == routenum).first()
+        seats = Seat.query.filter(Seat.route_id==route.route_id).all()
+        tickets = Ticket.query.filter(Ticket.route_id==route.route_id).all()
 
         for seat in seats:
             db.session.delete(seat)
@@ -412,14 +411,14 @@ def admin_tickets():
 
             tick = Ticket.query.get(ticket_id)
             seat = Seat.query.get(tick.seat_id)
-            route = Schedule.query.get(tick.route_num)
-            train = Train.query.get(tick.trainnum)
+            route = Schedule.query.get(tick.route_id)
+            train = Train.query.get(tick.train_id)
 
             seat.reserved = False
             tick.purchased = 'no'
             tick.user_id = None
 
-            num_seat_rev = Seat.query.filter_by(train_id=train.trainnum, reserved=True).count()
+            num_seat_rev = Seat.query.filter_by(train_id=train.train_id, reserved=True).count()
             route.curr_num_pass = num_seat_rev
 
             db.session.commit()
@@ -441,14 +440,15 @@ def admin_reserve(routenum):
     if current_user.role != 'admin':
         return redirect(url_for('views.home'))
     
-    routes = Schedule.query.filter(Schedule.route_num==routenum).first()
-    seats = Seat.query.filter_by(route_id=routes.route_num).all()
+    routes = Schedule.query.filter(Schedule.route_id==routenum).first()
+    seats = Seat.query.filter_by(route_id=routes.route_id).all()
     selected_user = session['selected_user']
 
     if request.method == 'POST':
         selected_seats = request.form.getlist('seat')
         session['routenum'] = routenum
         session['selected_seats'] = selected_seats
+        print(selected_seats)
         session['selected_user'] = selected_user
         return redirect(url_for('views.admin_ticket_confirm'))
 
@@ -461,15 +461,15 @@ def admin_ticket_confirm():
     selected_seats = session['selected_seats']
     selected_user = session['selected_user']
 
-    routes = Schedule.query.filter(Schedule.route_num==routenum).first()
+    routes = Schedule.query.filter(Schedule.route_id==routenum).first()
     seats = Seat.query.filter_by(route_id=routenum).all()
     tickets = Ticket.query.filter(Ticket.seat_id.in_(selected_seats)).all()
     selected_user_entity = User.query.filter(User.id==selected_user).first()
-    seat_nums = [seat.seatnum for seat in seats if str(seat.id) in selected_seats]
+    seat_nums = [seat.seat_number for seat in seats if str(seat.seat_id) in selected_seats]
 
     if request.method == 'POST':
         for seat in seats:
-            if str(seat.id) in selected_seats:
+            if str(seat.seat_id) in selected_seats:
                 seat.reserved = True
                 db.session.commit()
         for ticket in tickets:
@@ -478,8 +478,8 @@ def admin_ticket_confirm():
                 ticket.user_id = selected_user
                 db.session.commit()
         db.session.commit()
-        num_seat_rev = Seat.query.filter_by(route_id=routes.route_num, reserved=True).count()
-        routes.curr_num_pass = num_seat_rev
+        num_seat_rev = Seat.query.filter_by(route_id=routes.route_id, reserved=True).count()
+        routes.current_number_passenger = num_seat_rev
         db.session.commit()
 
         flash('Customers Successfully Given Tickets', category='success')
@@ -501,16 +501,16 @@ def admin_report():
         criteria = request.form.get('criteria')
         query = request.form.get('searchbar')
         if criteria == 'routenum':
-            routes = Schedule.query.filter(Schedule.route_num==query).all()
+            routes = Schedule.query.filter(Schedule.route_id==query).all()
         if criteria == 'all':
             routes = Schedule.query.all()
         pass
 
     for route in routes:
-        num_tickets_sold = Ticket.query.filter(Ticket.route_num==route.route_num, Ticket.purchased=='yes').count()
-        num_tickets_promoed = Ticket.query.filter(Ticket.route_num==route.route_num, Ticket.purchased=='promo').count()
-        seats_taken = route.curr_num_pass
-        tickets = Ticket.query.filter(Ticket.route_num==route.route_num, Ticket.purchased != 'no').all()
+        num_tickets_sold = Ticket.query.filter(Ticket.route_id==route.route_id, Ticket.purchased=='yes').count()
+        num_tickets_promoed = Ticket.query.filter(Ticket.route_id==route.route_id, Ticket.purchased=='promo').count()
+        seats_taken = route.current_number_passenger
+        tickets = Ticket.query.filter(Ticket.route_id==route.route_id, Ticket.purchased != 'no').all()
 
         demographics = {}
 

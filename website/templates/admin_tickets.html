@@ -103,13 +103,13 @@
                                 {% if ticket.purchased != 'no' %}
                                     {% set seat = ticket.seat %}
                                     <tr>
-                                        <td>{{ ticket.trainnum }}</td>
-                                        <td>{{ticket.route_num}}</td>
-                                        <td>{{ ticket.ticketnum }}</td>
-                                        <td>{{ seat.seatnum }}</td>
+                                        <td>{{ ticket.train_id }}</td>
+                                        <td>{{ticket.route_id}}</td>
+                                        <td>{{ ticket.ticket_id }}</td>
+                                        <td>{{ seat.seat_number }}</td>
                                         <td>
                                             <form method="POST">
-                                                <input type="hidden" name="ticket_id" value="{{ ticket.ticketnum }}">
+                                                <input type="hidden" name="ticket_id" value="{{ ticket.ticket_id }}">
                                                 <button type="submit" name="action" value="remove">Remove</button>
                                             </form>
                                         </td>
@@ -134,7 +134,7 @@
                 <label for="routenum">Routes</label>
                 <select name="routenum">
                     {% for route in routes %}
-                        <option value="{{ route.route_num }}">{{route.departlocation}} to {{ route.destination }} @ {{route.departtime}}</option>
+                        <option value="{{ route.route_id }}">{{route.depart_location}} to {{ route.destination }} @ {{route.depart_time}} on {{route.date}}</option>
                     {% endfor %}
                 </select>
             </br>

@@ -10,7 +10,6 @@
         background-image: url('static/images/trains.jpg');
         background-size: cover;
         background-position: center;
-        overflow: hidden;
         justify-content: center;
         align-items: center;
         display: flex;
@@ -20,6 +19,7 @@
         position: center; 
         margin-bottom: 200px;
         max-width: 600px;
+        max-height: 700px;
         margin: 0 auto;
         padding: 30px;
         border: 1px solid black;
@@ -30,6 +30,7 @@
         border-radius: 10px; 
         padding: 20px; 
         box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+        overflow-y: auto;
     }
 
     .seats, .train-details {
@@ -39,11 +40,11 @@
     }
 
     .seats h3, .train-details h3 {
-        color: black; /* Change text color for section headings */
+        color: black; 
     }
 
     .seats ul, .train-details p {
-        color: black; /* Change text color for content */
+        color: black; 
     }
 
     h2 {
@@ -97,9 +98,9 @@
         <div class="train-details">
             <h3>Train Details</h3>
             <p><strong>Date:</strong> {{ route.date }}</p>
-            <p><strong>Departure Time:</strong> {{ route.departtime }}</p>
-            <p><strong>Arrival Time:</strong> {{ route.arrivaltime }}</p>
-            <p><strong>Departure Location:</strong> {{ route.departlocation }}</p>
+            <p><strong>Departure Time:</strong> {{ route.depart_time }}</p>
+            <p><strong>Arrival Time:</strong> {{ route.arrival_time }}</p>
+            <p><strong>Departure Location:</strong> {{ route.depart_location }}</p>
             <p><strong>Destination:</strong> {{ route.destination }}</p>
         </div>
 

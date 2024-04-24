@@ -61,7 +61,7 @@ def signup():
             flash('Please Enter Last Name', category='error')
         else:
             new_user = User(email=email, password=generate_password_hash(password1),
-                            firstname=FirstName, lastname=LastName, role='user',
+                            first_name=FirstName, last_name=LastName, role='user',
                             address_street=street_address, address_zipcode=zipcode,
                             address_state=state, address_city=city, ethnicity=ethnic)
             db.session.add(new_user)
@@ -91,7 +91,7 @@ def adminman():
             flash('email too short', category='error')
         else:
             new_user = User(email=email, password=generate_password_hash(password1), 
-                            firstname=FirstName, lastname=LastName, role='admin')
+                            first_name=FirstName, last_name=LastName, role='admin')
             
             db.session.add(new_user)
             db.session.commit()

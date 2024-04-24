@@ -2,12 +2,79 @@
 {% block title %} Profile {%endblock%}
 
 {% block content %}
-<h1> Your Profile </h1>
 
-<div class="container">
+<style>
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('static/images/trains.jpg');
+        background-size: cover;
+        background-position: center;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .container2 {
+        position: center; 
+        margin-bottom: 200px;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        border: 1px solid black;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        background-repeat: no-repeat;
+        border: 2px solid #000; 
+        border-radius: 10px; 
+        padding: 20px; 
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+    }
+
+    .profile-info {
+        margin-bottom: 20px;
+        border: 2px solid black;
+        padding: 10px;
+    }
+
+    ul {
+    list-style-type: none;
+    padding: 0;
+    }
+
+    .payment-info label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .payment-info input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .payment-info button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .payment-info button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+
+<div class="container2">
+
+    <h1> Your Profile </h1>
+
     <div class="profile-info">
         <h2>Contact Info</h2>
-        <p>{{user.firstname}} {{user.lastname}}</p>
+        <p>{{user.first_name}} {{user.last_name}}</p>
         <p>{{user.email}}</p>
 
         <h2>Home Address</h2>

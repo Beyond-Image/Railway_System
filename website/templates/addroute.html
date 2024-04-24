@@ -54,7 +54,7 @@
             <label for="trainnum">Train Number</label>
             <select name="trainnum">
                 {% for train in trains %}
-                    <option value="{{train.trainnum}}">{{train.trainnum}}</option>
+                    <option value="{{train.train_id}}">{{train.train_id}}</option>
                 {% endfor %}
             </select>
         </div>
