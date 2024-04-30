@@ -91,7 +91,6 @@ def cancel():
         cancel_seat = Seat.query.filter(Seat.seat_id.in_(picked_tickets))
 
         for ticket in cancel_tickets:
-            print(ticket.ticketnum)
             ticket.purchased = 'no'
             ticket.user_id = None
             db.session.commit()
@@ -347,6 +346,8 @@ def delroute():
 
         if criteria == 'routenum':
             routes = Schedule.query.filter(Schedule.route_id==query).all()
+        elif criteria =='trainnum':
+            routes = Schedule.query.filter(Schedule.train_id==query).all()
         elif criteria == 'date':
             routes = Schedule.query.filter(Schedule.date == query).all()
         elif criteria == 'Destination':
